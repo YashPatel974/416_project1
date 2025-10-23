@@ -14,7 +14,16 @@ while True:
     with connectionSocket:
         print(f"Connection from {clientAddress[0]}  :  {clientAddress[1]} established.")
 
-        filename = connectionSocket.recv(1048).decode('utf-8')  # Receive file name from client
+        #filename = connectionSocket.recv(1048).decode('utf-8')  # Receive file name from client
+        filename_bytes = b''
+        while not filename_bytes.endswith(b'\n'):
+            chunk = connectionSocket.recv(1)
+            if not chunk:
+                break
+            filename_bytes += chunk
+
+            filename = filename_bytes.decode('utf-8').strip()
+
         if filename.startswith("PUT "):
             filename = filename[4:]
 

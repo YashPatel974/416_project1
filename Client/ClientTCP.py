@@ -15,7 +15,9 @@ while message != "quit":
         #fileName = message[4:]
         fileName = message
         
-        clientSocket.sendall(fileName.encode('utf-8')) # Send file name to server
+        
+        #clientSocket.sendall(fileName.encode('utf-8')) # Send file name to server
+        clientSocket.sendall(fileName.encode('utf-8') + b'\n')   
         fileName = message[4:]
         with open(fileName, 'rb') as f:
             while True:
