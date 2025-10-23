@@ -35,10 +35,14 @@ while message != "quit":
         clientSocket.sendall((message.strip() + "\n").encode('utf-8'))
 
         requested = message[4:].strip()
-        local_name = "downloaded_" + os.path.basename(requested)
+        #local_name = "downloaded_" + os.path.basename(requested)
+        local_name = os.path.basename(requested)
+        full_path = "downloads" + "/" + local_name
+            # create new directory for downloads if does not exist already
+        file_upload = os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         #fileName = message[4:]
-        with open(local_name, 'wb') as f:
+        with open(full_path, 'wb') as f:
             while True:
                 data = clientSocket.recv(4096)
                 if not data:
