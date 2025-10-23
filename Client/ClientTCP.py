@@ -27,12 +27,18 @@ while message != "quit":
                     break
                 clientSocket.sendall(bytesRead)
         print(f"File {fileName} sent to server.")
+
     elif message[0:4] == "GET ":
         #fileName = message[4:]
         fileName = message
-        clientSocket.sendall(fileName.encode('utf-8')) # Send file name to server
+        #clientSocket.sendall(fileName.encode('utf-8')) # Send file name to server
+        clientSocket.sendall((message.strip() + "\n").encode('utf-8'))
+
+        requested = message[4:].strip()
+        local_name = "downloaded_" + os.path.basename(requested)
+
         #fileName = message[4:]
-        with open("downloaded_" + fileName, 'wb') as f:
+        with open(local_name, 'wb') as f:
             while True:
                 data = clientSocket.recv(4096)
                 if not data:

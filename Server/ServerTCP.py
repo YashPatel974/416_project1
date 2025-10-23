@@ -22,7 +22,7 @@ while True:
                 break
             filename_bytes += chunk
 
-            filename = filename_bytes.decode('utf-8').strip()
+        filename = filename_bytes.decode('utf-8').strip()
 
         if filename.startswith("PUT "):
             filename = filename[4:]
@@ -43,6 +43,7 @@ while True:
                     f.write(data)
             
             print(f"File {client_file} received from client.")
+            
         elif filename.startswith("GET "):
             filename = filename[4:]
             print(f"Sending file: {filename}")
