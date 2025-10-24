@@ -47,6 +47,7 @@ while True:
                     f.write(data)
                     received += len(data)
                     serverSocket.sendto(b"ACK", clientAddr) # send ack for each chunk
+                    print(f"ACK -> {len(data)} bytes.")
 
             # after file is received, send FIN
             print("File received completely.")
@@ -81,7 +82,7 @@ while True:
                     try:
                         ack, addr = serverSocket.recvfrom(1024)
                         if ack == b"ACK":
-                            #print(f"Sent chunk of {len(chunk)} bytes.")
+                            print(f"rcv-> {len(chunk)} bytes.")
                             break
                     except socket.timeout:
                         print("Timeout, resending chunk...")

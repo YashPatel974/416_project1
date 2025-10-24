@@ -2,9 +2,16 @@ import socket
 import os
 import time
 
-serverIP = "169.226.237.49"
-serverPort = 12000
+#serverIP = "169.226.237.49"
+#serverPort = 12000
 
+
+# Asking the user for server IP and port number
+ip = input("Enter Server IP : ")
+serverIP = ip
+
+port = input("Enter Port Number : ")
+serverPort = int(port)
 #SOCK_DGRAM is for UDP connections
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 clientSocket.settimeout(1.0) # Set a timeout of 1 second
@@ -27,7 +34,7 @@ while message != "quit":
         msg, _ = clientSocket.recvfrom(1024) # Wait for server ack
 
         if msg != b"ACK_LEN":
-            print("No ACK from server, aborting...")
+            print("Did not receive data. Terminating.")
             break
         elif msg == b"ACK_LEN":
             print("ACK_LEN received from server, sending file...")
@@ -46,15 +53,17 @@ while message != "quit":
                     try:
                         ack, addr = clientSocket.recvfrom(1024)
                         if ack == b"ACK":
-                            #print(f"Sent chunk of {len(chunk)} bytes.")
+                            print(f"rcv -> {len(chunk)} bytes.")
                             break
                     except socket.timeout:
-                        print("Timeout, resending chunk...")
+                        print("Did not receive ACK. Terminating")
+                        break
         
         # after file is sent, send FIN        
         fin, addr = clientSocket.recvfrom(1024)
         if fin == b"FIN":
             print(f"File {fileName} sent successfully.")
+            break
     
     elif message[0:4] == "GET ":
         clientSocket.sendto(message.encode('utf-8') + b'\n', (serverIP, serverPort))
@@ -79,6 +88,7 @@ while message != "quit":
                     f.write(data)
                     received += len(data)
                     clientSocket.sendto(b"ACK", (serverIP, serverPort)) # send ack for each chunk
+                    print(f"ACK -> {len(data)} bytes.")
 
             # after file is received, send FIN
             print("File received completely.")
